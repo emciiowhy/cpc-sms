@@ -1,12 +1,15 @@
 #!/bin/sh
 
-# Optimize the application for production
-# This combines config:cache, route:cache, and view:cache
+# 1. Optimize for Production
+# This caches your config and routes so the app runs faster
 php artisan optimize
 
-# Run migrations and seed the database with your test accounts
-# The --force flag is required to run migrations in production
-php artisan migrate --force --seed
+# 2. Run Migrations AND Seeders
+# We use --force because Laravel protects production databases from accidental wipes
+php artisan migrate:fresh --seed --force
 
-# Start Apache in the foreground
+# 3. Clear any leftover cache just in case
+php artisan cache:clear
+
+# 4. Start the Web Server
 exec apache2-foreground
