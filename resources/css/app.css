@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        text-rendering: optimizeLegibility;
+    }
+}
+
+@layer utilities {
+    .touch-target {
+        @apply min-h-[44px] min-w-[44px] inline-flex items-center justify-center;
+    }
+
+    .scroll-touch {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .pt-safe {
+        padding-top: env(safe-area-inset-top, 0);
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
