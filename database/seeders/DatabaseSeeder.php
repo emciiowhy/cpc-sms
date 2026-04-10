@@ -16,31 +16,31 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin User',
                 'email' => 'admin@school.com',
                 'password' => bcrypt('password123'),
-                'role' => 'Admin',
+                'role' => 'admin', // Changed from 'Admin'
             ],
             [
                 'name' => 'Registrar User',
                 'email' => 'registrar@school.com',
                 'password' => bcrypt('password123'),
-                'role' => 'Registrar',
+                'role' => 'registrar', // Changed from 'Registrar'
             ],
             [
                 'name' => 'Guidance User',
                 'email' => 'guidance@school.com',
                 'password' => bcrypt('password123'),
-                'role' => 'Guidance',
+                'role' => 'guidance', // Changed from 'Guidance'
             ],
             [
                 'name' => 'Clinic User',
                 'email' => 'clinic@school.com',
                 'password' => bcrypt('password123'),
-                'role' => 'Clinic',
+                'role' => 'clinic', // Changed from 'Clinic'
             ],
             [
                 'name' => 'SAO User',
                 'email' => 'sao@school.com',
                 'password' => bcrypt('password123'),
-                'role' => 'SAO',
+                'role' => 'sao', // Changed from 'SAO'
             ],
         ];
     
