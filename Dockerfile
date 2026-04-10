@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Install system dependencies
+# 1. Install system dependencies + Node.js (needed for Vite)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpng-dev \
@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    curl \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install pdo pdo_pgsql
 
 # 2. Enable Apache mod_rewrite
@@ -23,14 +26,17 @@ COPY . /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# 6. Set permissions
+# 6. Build Frontend Assets (Vite)
+# This creates the manifest.json file Laravel is looking for
+RUN npm install
+RUN npm run build
+
+# 7. Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 7. Point Apache to public/
+# 8. Point Apache to public/
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
 
-# 8. Setup the entrypoint script
+# 9. Entrypoint script (Ensure this file exists in your repo)
 RUN chmod +x /var/www/html/docker-entrypoint.sh
-
-# 9. Start the app
 ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
