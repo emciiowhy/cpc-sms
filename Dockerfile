@@ -1,15 +1,32 @@
 FROM php:8.2-apache
 
-# Install dependencies
+# 1. Install system dependencies for PostgreSQL and PHP extensions
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Copy code
+# 2. Enable Apache mod_rewrite for Laravel
+RUN a2enmod rewrite
+
+# 3. Set working directory
+WORKDIR /var/www/html
+
+# 4. Copy project files
 COPY . /var/www/html
 
-# Set permissions
+# 5. Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 6. Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# 7. Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Set Apache Document Root to public/
+# 8. Point Apache to the Laravel 'public' folder
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
