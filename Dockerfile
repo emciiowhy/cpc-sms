@@ -23,10 +23,15 @@ COPY . /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # 6. Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+# We use --no-interaction to prevent the build from hanging
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# 7. Set permissions for Laravel
+# 7. Set permissions for Laravel (Crucial for the 500 error fix)
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # 8. Point Apache to the Laravel 'public' folder
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+
+# 9. Clear caches and Automate migration
+# We clear the config cache first to make sure it reads the new DATABASE_URL
+CMD php artisan config:clear && php artisan migrate --force && apache2-foreground
